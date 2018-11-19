@@ -1,4 +1,4 @@
-import { RecursiveItem } from '../general-types';
+import { RecursiveItem } from './general-types';
 
 export function* iterateDeep<T>(input: RecursiveItem<T>): IterableIterator<[T, number[]]> {
     yield* iterateBody(input, []);

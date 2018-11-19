@@ -1,5 +1,5 @@
-import { RecursiveArray } from "./general-types";
-import { iterateDeep } from "./utils/iterate-square";
+import { RecursiveArray } from "../utils/general-types";
+import { iterateDeep } from "../utils/iterate-square";
 
 export const reduceSquare = <T, P>(
 	reducerFn: (acc: P, item: T, idxs: number[]) => P,

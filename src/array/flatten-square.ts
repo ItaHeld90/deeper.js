@@ -1,4 +1,4 @@
-import { RecursiveArray, RecursiveItem } from "./general-types";
+import { RecursiveArray, RecursiveItem } from "../utils/general-types";
 
 export const flattenSquare = <T>(arr: RecursiveArray<T>): T[] => {
     const result = [];

@@ -1,12 +1,12 @@
-import { iterateDeep } from "./iterate-square";
-import { RecursiveArray } from "./general-types";
+import { iterateDeep } from './iterate-square';
+import { RecursiveArray } from './general-types';
 
-export const findSquare = <T>(predicateFn: (item: T) => boolean, arr: RecursiveArray<T>): T => {
-    for (let item of iterateDeep(arr)) {
-        if (predicateFn(item)) {
-            return item;
-        }
-    }
+export const findSquare = <T>(predicateFn: (item: T, idxs: number[]) => boolean, arr: RecursiveArray<T>): T => {
+	for (let [item, idxs] of iterateDeep(arr)) {
+		if (predicateFn(item, idxs)) {
+			return item;
+		}
+	}
 
-    return undefined;
-}
+	return undefined;
+};

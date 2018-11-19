@@ -1,5 +1,5 @@
 import { filterSquare } from './filter-square';
 import { complement } from './general-utils';
 
-export const rejectSquare = (filterFn: (item: any, idxs: number[]) => boolean, arr: any) =>
+export const rejectSquare = <T>(filterFn: (item: T, idxs: number[]) => boolean, arr: RecursiveArray<T>) =>
 	filterSquare(complement(filterFn), arr);

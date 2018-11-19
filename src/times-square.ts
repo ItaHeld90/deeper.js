@@ -1,6 +1,6 @@
 import { times } from './general-utils';
 
-export const timesSquare = (cnts: number[], fn: (idxs: number[]) => any) => {
+export const timesSquare = <T>(cnts: number[], fn: (idxs: number[]) => T): RecursiveArray<T> => {
 	const recurse = (cnts: number[], idxs: number[]) => {
 		const [cnt, ...restCnts] = cnts;
 

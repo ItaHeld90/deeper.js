@@ -10,7 +10,8 @@ export const times = <T>(amount: number, fn: (idx: number) => T) => {
 
 export const tail = (arr: any[]) => arr.slice(1);
 
-const identity = item => item;
+export const identity = item => item;
+
 export const compact = (arr: any[]) => arr.filter(identity);
 
 export const complement = <T extends any[]>(fn: (...parmas: T) => boolean) => (...params: T) => !fn(...params);

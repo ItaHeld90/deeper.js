@@ -1,4 +1,4 @@
-import { times } from './general-utils';
+import { times } from './utils/general-utils';
 import { RecursiveArray } from './general-types';
 
 export const timesSquare = <T>(cnts: number[], fn: (idxs: number[]) => T): RecursiveArray<T> => {

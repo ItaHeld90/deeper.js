@@ -1,4 +1,4 @@
-import { compact } from './general-utils';
+import { compact } from './utils/general-utils';
 import { RecursiveItem, RecursiveArray } from './general-types';
 
 export const filterSquare = <T>(filterFn: (item: T, idxs: number[]) => boolean, arr: RecursiveArray<T>) => {

@@ -1,4 +1,4 @@
-export function* iterateDeep<T>(path: (string | number)[], input: T): IterableIterator<any> {
+export function* iterateObjDeep<T>(path: (string | number)[], input: T): IterableIterator<any> {
     const [prop, ...nextPath] = path;
     
     if (prop != null) {
@@ -9,11 +9,11 @@ export function* iterateDeep<T>(path: (string | number)[], input: T): IterableIt
         }
         else if (Array.isArray(next)) {
             for (let item of next) {
-                yield* iterateDeep(nextPath, item);
+                yield* iterateObjDeep(nextPath, item);
             }
         }
         else {
-            yield* iterateDeep(nextPath, next);
+            yield* iterateObjDeep(nextPath, next);
         }
     } else if (Array.isArray(input)) {
         yield* input;

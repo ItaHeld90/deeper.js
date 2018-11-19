@@ -1,3 +1,5 @@
+import { RecursiveItem, RecursiveArray } from "./general-types";
+
 export const reduceSquare = <T, P>(
 	reducerFn: (acc: P, item: T, idxs: number[]) => P,
 	initial: P,

@@ -8,7 +8,6 @@ export const updateSquare = <T, P extends T>(idxs: number[], value: P, arr: Recu
     const arrToUpdatePath = init(idxs);
 
     const arrToUpdate = findByPath(arrToUpdatePath, clone);
-    arrToUpdate
 
     if (Array.isArray(arrToUpdate) && arrToUpdate.length > idxToUpdate) {
         arrToUpdate[idxToUpdate] = value;

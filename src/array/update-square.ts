@@ -1,17 +1,10 @@
-import { findByPath, init, last } from './../utils/general-utils';
-import { cloneDeep } from './clone-deep';
+import { changeDeep } from './../utils/general-utils';
 import { RecursiveArray } from './../utils/general-types';
 
-export const updateSquare = <T, P extends T>(idxs: number[], value: P, arr: RecursiveArray<T>): RecursiveArray<T> => {
-    const clone = cloneDeep(arr);
-    const idxToUpdate = last(idxs);
-    const arrToUpdatePath = init(idxs);
+export const updateSquare = <T>(idxs: number[], value: any, arr: RecursiveArray<T>): RecursiveArray<T> => {
+    return changeDeep(idxs, value, update, arr);
+}
 
-    const arrToUpdate = findByPath(arrToUpdatePath, clone);
-
-    if (Array.isArray(arrToUpdate) && arrToUpdate.length > idxToUpdate) {
-        arrToUpdate[idxToUpdate] = value;
-    }
-
-    return clone;
+function update<T, P extends T>(idxToUpdate: number, value: P, arrToUpdate: T[]) {
+    arrToUpdate[idxToUpdate] = value;
 }

@@ -1,4 +1,5 @@
 import { RecursiveArray, RecursiveItem } from "./general-types";
+import { cloneDeep } from "../array/clone-deep";
 
 export const times = <T>(amount: number, fn: (idx: number) => T) => {
 	const result = [];
@@ -10,9 +11,9 @@ export const times = <T>(amount: number, fn: (idx: number) => T) => {
 	return result;
 };
 
-export const tail = (arr: any[]) => arr.slice(1);
-export const init = (arr: any[]) => arr.slice(0, arr.length - 1);
-export const last = (arr: any[]) => arr[arr.length - 1];
+export const tail = <T>(arr: T[]): T[] => arr.slice(1);
+export const init = <T>(arr: T[]): T[] => arr.slice(0, arr.length - 1);
+export const last = <T>(arr: T[]): T => arr[arr.length - 1];
 
 export const identity = item => item;
 
@@ -60,9 +61,27 @@ export const findByPath = <T>(idxs: number[], arr: RecursiveArray<T>) => {
 		return !idxs.length
 			? item
 			: Array.isArray(item)
-			? recurse(tail(idxs), item[idxs[0]])
-			: undefined;
+				? recurse(tail(idxs), item[idxs[0]])
+				: undefined;
 	}
 
 	return recurse(idxs, arr);
+}
+
+export const changeDeep = <T>(idxs: number[],
+	value: any,
+	changeFn: (idxToUpdate: number, value: any, arrToUpdate: T[]) => void,
+	arr: RecursiveArray<T>
+): RecursiveArray<T> => {
+	const clone = cloneDeep(arr);
+	const idxToUpdate = last(idxs);
+	const arrToUpdatePath = init(idxs);
+
+	const arrToUpdate = findByPath(arrToUpdatePath, clone);
+
+	if (Array.isArray(arrToUpdate) && arrToUpdate.length > idxToUpdate) {
+		changeFn(idxToUpdate, value, arrToUpdate);
+	}
+
+	return clone;
 }

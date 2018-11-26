@@ -69,8 +69,7 @@ export const findByPath = <T>(idxs: number[], arr: RecursiveArray<T>) => {
 }
 
 export const changeDeep = <T>(idxs: number[],
-	value: any,
-	changeFn: (idxToUpdate: number, value: any, arrToUpdate: T[]) => void,
+	changeFn: (idxToUpdate: number, arrToUpdate: T[]) => void,
 	arr: RecursiveArray<T>
 ): RecursiveArray<T> => {
 	const clone = cloneDeep(arr);
@@ -80,7 +79,7 @@ export const changeDeep = <T>(idxs: number[],
 	const arrToUpdate = findByPath(arrToUpdatePath, clone);
 
 	if (Array.isArray(arrToUpdate) && arrToUpdate.length > idxToUpdate) {
-		changeFn(idxToUpdate, value, arrToUpdate);
+		changeFn(idxToUpdate, arrToUpdate);
 	}
 
 	return clone;

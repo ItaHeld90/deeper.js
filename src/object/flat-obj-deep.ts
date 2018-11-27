@@ -1,10 +1,10 @@
 import { iterateObjDeep } from '../utils/iterate-obj-deep';
 
-export const flatObjDeep = <T>(path: (string | number)[], arr: T): any[] => {
+export const flatObjDeep = <T>(path: (string | number)[], arr: Object): T[] => {
     const result = [];
 
-    for (let item of iterateObjDeep(path, arr)) {
-        result.push(item);
+    for (let { value } of iterateObjDeep(path, arr)) {
+        result.push(value);
     }
 
     return result;

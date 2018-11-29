@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node ./src/object/flat-map-obj-deep.ts"
+    "test": "ts-node ./src/object/find-obj-deep.ts"
   },
   "author": "",
   "license": "ISC",

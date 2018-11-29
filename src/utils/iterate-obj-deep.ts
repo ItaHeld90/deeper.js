@@ -1,13 +1,7 @@
 import { tail } from "./general-utils";
-
-export interface DeepIteratee {
-    root: any;
-    value: any;
-    [others: string]: any;
-};
+import { DeepIteratee, Path } from "./general-types";
 
 // type Path<T1, T2, T3, T4, T5> = [T1] | [T1, T2] | [T1, T2, T3] | [T1, T2, T3, T4] | [T1, T2, T3, T4, T5];
-type Path = (string | number)[];
 
 export function* iterateObjDeep<T,
     // T1 extends keyof T,

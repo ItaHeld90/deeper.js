@@ -1,8 +1,9 @@
 import { tail } from "./general-utils";
 
-interface DeepIteratee {
-    root: any,
-    value: any
+export interface DeepIteratee {
+    root: any;
+    value: any;
+    [others: string]: any;
 };
 
 // type Path<T1, T2, T3, T4, T5> = [T1] | [T1, T2] | [T1, T2, T3] | [T1, T2, T3, T4] | [T1, T2, T3, T4, T5];

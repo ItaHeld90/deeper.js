@@ -1,11 +1,6 @@
 import { iterateObjDeep } from '../utils/iterate-obj-deep';
+import { DeepIteratee, Path } from '../utils/general-types';
 
-export const flatObjDeep = <T>(path: (string | number)[], arr: T): any[] => {
-    const result = [];
-
-    for (let item of iterateObjDeep(path, arr)) {
-        result.push(item);
-    }
-
-    return result;
+export const flatObjDeep = (path: Path, obj: Object): DeepIteratee[] => {
+    return Array.from(iterateObjDeep(path, obj));
 };

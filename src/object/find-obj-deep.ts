@@ -1,9 +1,10 @@
 import { iterateObjDeep } from '../utils/iterate-obj-deep';
+import { DeepIteratee, Path } from '../utils/general-types';
 
-export const findObjDeep = <T>(predicateFn: (item: T) => boolean, path: (string | number)[], arr: T): any[] => {
-	for (let item of iterateObjDeep(path, arr)) {
-		if (predicateFn(item)) {
-			return item;
+export const findObjDeep = <T>(predicateFn: (item: DeepIteratee) => boolean, path: Path, obj: Object): T => {
+	for (let iteratee of iterateObjDeep(path, obj)) {
+		if (predicateFn(iteratee)) {
+			return iteratee.value;
 		}
 	}
 

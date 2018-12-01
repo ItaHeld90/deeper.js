@@ -84,3 +84,13 @@ export const changeDeep = <T>(idxs: number[],
 
 	return clone;
 }
+
+export const groupBy = <T>(groupFn: (item: T) => any, arr: T[]): { [key: string]: T[] } => {
+	return arr.reduce((res, item) => {
+		const key = groupFn(item);
+		const currVal = res[key] || [];
+		currVal.push(item);
+		res[key] = currVal;
+		return res;
+	}, {});
+}

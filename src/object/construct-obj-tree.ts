@@ -1,9 +1,9 @@
-import { groupBy } from "../utils/general-utils";
+import { groupBy, pick } from "../utils/general-utils";
 
 interface ObjTreeConfig {
     records: Object[];
     children?: ObjTreeConfigNode[];
-    projection?: ((record: Object) => Object) /* | (string | number)[] */;
+    projection?: ((record: Object) => Object) | (string | number)[];
 }
 
 interface ObjTreeRelation {
@@ -32,7 +32,11 @@ const constructObjTree = (objTree: ObjTreeConfig): Object[] => {
                 return res;
             }, {});
 
-        const projectedParentRecord = objTree.projection ? objTree.projection(parentRecord) : parentRecord;
+        const projectedParentRecord = !objTree.projection 
+            ? parentRecord
+            : typeof objTree.projection === 'function'
+                ? objTree.projection(parentRecord)
+                : pick(objTree.projection as (keyof typeof parentRecord)[], parentRecord) as Object
 
         return {
             ...projectedParentRecord,
@@ -40,4 +44,3 @@ const constructObjTree = (objTree: ObjTreeConfig): Object[] => {
         };
     });
 };
-

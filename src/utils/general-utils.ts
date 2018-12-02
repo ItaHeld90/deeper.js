@@ -94,3 +94,10 @@ export const groupBy = <T>(groupFn: (item: T) => any, arr: T[]): { [key: string]
 		return res;
 	}, {});
 }
+
+export const pick = <T, K extends keyof T>(props: K[], obj: T): Pick<T, K> => {
+	return props.reduce((res, prop) => { 
+		res[prop as string] = obj[prop];
+		return res;
+	 }, {}) as Pick<T, K>;
+}

@@ -3,6 +3,7 @@ import { groupBy } from "../utils/general-utils";
 interface ObjTreeConfig {
     records: Object[];
     children?: ObjTreeConfigNode[];
+    projection?: ((record: Object) => Object) /* | (string | number)[] */;
 }
 
 interface ObjTreeRelation {
@@ -15,22 +16,26 @@ interface ObjTreeConfigNode extends ObjTreeConfig, ObjTreeRelation {
 }
 
 const constructObjTree = (objTree: ObjTreeConfig): Object[] => {
-    const childrenRecordGroups: { [parentKeyProp: string]: { [parentKey: string]: Object[] } } =
-        objTree.children.reduce((res, childNode) => {
-            const childrenByParent = groupBy(childRecord => childRecord[childNode.childKey], childNode.records);
-            res[childNode.parentKey] = childrenByParent;
-            return res;
-        }, {});
+    const childrenRecordGroups =
+        objTree.children.map(({ childKey, records, parentKey, ...otherProps }) => ({
+            recordsByParentKey: groupBy(childRecord => childRecord[childKey], records),
+            parentKeyProp: parentKey,
+            ...otherProps,
+        }));
 
     return objTree.records.map((parentRecord) => {
-        const extension = objTree.children.reduce((res, { targetName, parentKey, children = [] }) => {
-            const childRecords = childrenRecordGroups[parentKey][parentRecord[parentKey]];
-            res[targetName] = constructObjTree({ records: childRecords, children });
-            return res;
-        }, {});
+        const extension = childrenRecordGroups.reduce(
+            (res, { targetName, parentKeyProp, recordsByParentKey, projection: childProjection, children = [] }) => {
+                // console.log(util.inspect(childrenRecordGroups, false, null))
+                const childRecords = recordsByParentKey[parentRecord[parentKeyProp]];
+                res[targetName] = constructObjTree({ records: childRecords, children, projection: childProjection });
+                return res;
+            }, {});
+
+        const projectedParentRecord = objTree.projection ? objTree.projection(parentRecord) : parentRecord;
 
         return {
-            ...parentRecord,
+            ...projectedParentRecord,
             ...extension
         };
     });

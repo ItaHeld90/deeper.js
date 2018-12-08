@@ -1,6 +1,4 @@
 import { groupBy, pick, identity } from "../utils/general-utils";
-//@ts-ignore
-const util = require('util');
 
 interface ObjTreeConfig {
     name: string;

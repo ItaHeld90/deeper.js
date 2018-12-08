@@ -1,9 +1,11 @@
-import { groupBy, pick } from "../utils/general-utils";
+import { groupBy, pick, identity } from "../utils/general-utils";
+//@ts-ignore
+const util = require('util');
 
 interface ObjTreeConfig {
-    records: Object[];
-    children?: ObjTreeConfigNode[];
+    name: string;
     projection?: ((record: Object) => Object) | (string | number)[];
+    children?: ObjTreeConfigNode[];
 }
 
 interface ObjTreeRelation {
@@ -12,35 +14,38 @@ interface ObjTreeRelation {
 }
 
 interface ObjTreeConfigNode extends ObjTreeConfig, ObjTreeRelation {
-    targetName: string;
+    name: string;
 }
 
-const constructObjTree = (objTree: ObjTreeConfig): Object[] => {
+type ConstructTreeInput = { [name: string]: any[] };
+
+export const constructObjTree = (objTree: ObjTreeConfig, input: ConstructTreeInput): Object[] => {
+    const parentRecords = input[objTree.name];
+
+    const projection = !objTree.projection
+        ? identity
+        : typeof objTree.projection === 'function'
+            ? objTree.projection
+            : parentRecord => pick(objTree.projection as string[], parentRecord) as Object
+
     const childrenRecordGroups =
-        objTree.children.map(({ childKey, records, parentKey, ...otherProps }) => ({
-            recordsByParentKey: groupBy(childRecord => childRecord[childKey], records),
+        objTree.children.map(({ name, childKey, parentKey, ...otherProps }) => ({
+            recordsByParentKey: groupBy(childRecord => childRecord[childKey], input[name]),
             parentKeyProp: parentKey,
+            name,
             ...otherProps,
         }));
 
-    return objTree.records.map((parentRecord) => {
-        const extension = childrenRecordGroups.reduce(
-            (res, { targetName, parentKeyProp, recordsByParentKey, projection: childProjection, children = [] }) => {
-                // console.log(util.inspect(childrenRecordGroups, false, null))
+    return parentRecords.map(parentRecord => ({
+        ...projection(parentRecord),
+        ...(childrenRecordGroups.reduce(
+            (res, { name, parentKeyProp, recordsByParentKey, projection: childProjection, children = [] }) => {
                 const childRecords = recordsByParentKey[parentRecord[parentKeyProp]];
-                res[targetName] = constructObjTree({ records: childRecords, children, projection: childProjection });
+                res[name] = constructObjTree(
+                    { name, children, projection: childProjection },
+                    { ...input, [name]: childRecords }
+                );
                 return res;
-            }, {});
-
-        const projectedParentRecord = !objTree.projection 
-            ? parentRecord
-            : typeof objTree.projection === 'function'
-                ? objTree.projection(parentRecord)
-                : pick(objTree.projection as (keyof typeof parentRecord)[], parentRecord) as Object
-
-        return {
-            ...projectedParentRecord,
-            ...extension
-        };
-    });
+            }, {}))
+    }));
 };

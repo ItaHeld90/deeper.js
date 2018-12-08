@@ -1,29 +1,22 @@
-const constructObjTree = (objTree: ObjTreeConfig): Object[] => {
-    const childrenRecordGroups =
-        objTree.children.map(({ childKey, records, parentKey, ...otherProps }) => ({
-            recordsByParentKey: groupBy(childRecord => childRecord[childKey], records),
-            parentKeyProp: parentKey,
-            ...otherProps,
-        }));
+import { flatMapObjDeep } from "./flat-map-obj-deep";
+import { omit } from "../utils/general-utils";
+import { ObjTreeConfig } from "../utils/general-types";
 
-    return objTree.records.map((parentRecord) => {
-        const extension = childrenRecordGroups.reduce(
-            (res, { targetName, parentKeyProp, recordsByParentKey, projection: childProjection, children = [] }) => {
-                // console.log(util.inspect(childrenRecordGroups, false, null))
-                const childRecords = recordsByParentKey[parentRecord[parentKeyProp]];
-                res[targetName] = constructObjTree({ records: childRecords, children, projection: childProjection });
-                return res;
-            }, {});
+export const deconstructObjTree = (tree: ObjTreeConfig, records: Object[]): { [name: string]: any[] } => {
+    const { children = [] } = tree;
+    const childrenNames = children.map(c => c.name);
 
-        const projectedParentRecord = !objTree.projection 
-            ? parentRecord
-            : typeof objTree.projection === 'function'
-                ? objTree.projection(parentRecord)
-                : pick(objTree.projection as (keyof typeof parentRecord)[], parentRecord) as Object
+    return {
+        [tree.name]: records.map(r => omit(childrenNames as (keyof typeof r)[], r)),
+        ...(children.reduce((res, subTree) => {
+            const { name, childKey, parentKey } = subTree;
 
-        return {
-            ...projectedParentRecord,
-            ...extension
-        };
-    });
-};
+            const childRecords = flatMapObjDeep(
+                ({ root, value }) => ({ ...value, [childKey]: root[parentKey] }),
+                [name],
+                records
+            );
+            return Object.assign(res, deconstructObjTree(subTree, childRecords));
+        }, {}))
+    }
+}

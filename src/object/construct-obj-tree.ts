@@ -1,21 +1,5 @@
 import { groupBy, pick, identity } from "../utils/general-utils";
-
-interface ObjTreeConfig {
-    name: string;
-    projection?: ((record: Object) => Object) | (string | number)[];
-    children?: ObjTreeConfigNode[];
-}
-
-interface ObjTreeRelation {
-    parentKey: string;
-    childKey: string;
-}
-
-interface ObjTreeConfigNode extends ObjTreeConfig, ObjTreeRelation {
-    name: string;
-}
-
-type ConstructTreeInput = { [name: string]: any[] };
+import { ObjTreeConfig, ConstructTreeInput } from "../utils/general-types";
 
 export const constructObjTree = (objTree: ObjTreeConfig, input: ConstructTreeInput): Object[] => {
     const parentRecords = input[objTree.name];

@@ -95,9 +95,20 @@ export const groupBy = <T>(groupFn: (item: T) => any, arr: T[]): { [key: string]
 	}, {});
 }
 
-export const pick = <T, K extends keyof T>(props: K[], obj: T): Pick<T, K> => {
-	return props.reduce((res, prop) => { 
+export const pick = <T extends Object, K extends keyof T>(props: K[], obj: T): Pick<T, K> => {
+	return props.reduce((res, prop) => {
 		res[prop as string] = obj[prop];
 		return res;
-	 }, {}) as Pick<T, K>;
+	}, {}) as Pick<T, K>;
+}
+
+export const omit = <T extends Object, K extends keyof T>(props: K[], obj: T): Exclude<T, K> => {
+	return Object.keys(obj)
+		.reduce((res, key) => {
+			if (!props.find(p => p === key)) {
+				res[key] = obj[key];
+			}
+
+			return res;
+		}, {}) as Exclude<T, K>
 }

@@ -7,7 +7,8 @@ export interface DeepIteratee {
     [others: string]: any;
 };
 
-export type Path = (string | number)[];
+export type PropsPath = (string | number)[];
+export type Path<T> = PropsPath | ((obj: T) => any);
 
 export interface ObjTreeConfig {
     name: string;

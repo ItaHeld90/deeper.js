@@ -113,7 +113,7 @@ export const omit = <T extends Object, K extends keyof T>(props: K[], obj: T): E
 		}, {}) as Exclude<T, K>
 }
 
-export function createPath<T extends Object>(fn: (obj: T) => any, obj: T): string[] {
+export function createPropsPath<T extends Object>(fn: (obj: T) => any, obj: T): string[] {
 	const path: string[] = [];
 
 	const objProxy = createPathProxy(obj, propName => path.push(propName.toString()));
@@ -124,13 +124,18 @@ export function createPath<T extends Object>(fn: (obj: T) => any, obj: T): strin
 
 function createPathProxy<T extends Object>(obj: T, addToPathFn: (name: PropertyKey) => void): T {
 	return new Proxy(obj, {
-		get: function(target, prop) {
-            if (!Array.isArray(target)) {
-                addToPathFn(prop);
-            }
+		get: (target, prop) => {
+			if (!Array.isArray(target)) {
+				addToPathFn(prop);
+			}
 
-			return createPathProxy(obj[prop], addToPathFn);
+			const nextVal = obj[prop];
+			return typeof nextVal === 'object'
+				? createPathProxy(nextVal, addToPathFn)
+				: nextVal
 		},
-		//TODO: make the proxy immutable to changes
+		// immutable
+		set: () => false,
+        deleteProperty: () => false,
 	});
 }

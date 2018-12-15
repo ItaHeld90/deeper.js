@@ -1,8 +1,8 @@
-import { tail, createPath } from './general-utils';
+import { tail, createPropsPath } from './general-utils';
 import { DeepIteratee, Path, PropsPath } from './general-types';
 
 export function* iterateObjDeep<T>(path: Path<T>, input: T): IterableIterator<DeepIteratee> {
-	const calcuatedPath: PropsPath = typeof path === 'function' ? createPath(path, input) : path;
+	const calcuatedPath: PropsPath = typeof path === 'function' ? createPropsPath(path, input) : path;
 	const defaultData = { value: undefined };
 
 	if (Array.isArray(input)) {

@@ -84,3 +84,58 @@ export const changeDeep = <T>(idxs: number[],
 
 	return clone;
 }
+
+export const groupBy = <T>(groupFn: (item: T) => any, arr: T[]): { [key: string]: T[] } => {
+	return arr.reduce((res, item) => {
+		const key = groupFn(item);
+		const currVal = res[key] || [];
+		currVal.push(item);
+		res[key] = currVal;
+		return res;
+	}, {});
+}
+
+export const pick = <T extends Object, K extends keyof T>(props: K[], obj: T): Pick<T, K> => {
+	return props.reduce((res, prop) => {
+		res[prop as string] = obj[prop];
+		return res;
+	}, {}) as Pick<T, K>;
+}
+
+export const omit = <T extends Object, K extends keyof T>(props: K[], obj: T): Exclude<T, K> => {
+	return Object.keys(obj)
+		.reduce((res, key) => {
+			if (!props.find(p => p === key)) {
+				res[key] = obj[key];
+			}
+
+			return res;
+		}, {}) as Exclude<T, K>
+}
+
+export function createPropsPath<T extends Object>(fn: (obj: T) => any, obj: T): string[] {
+	const path: string[] = [];
+
+	const objProxy = createPathProxy(obj, propName => path.push(propName.toString()));
+	fn(objProxy);
+
+	return path;
+}
+
+function createPathProxy<T extends Object>(obj: T, addToPathFn: (name: PropertyKey) => void): T {
+	return new Proxy(obj, {
+		get: (target, prop) => {
+			if (!Array.isArray(target)) {
+				addToPathFn(prop);
+			}
+
+			const nextVal = obj[prop];
+			return typeof nextVal === 'object'
+				? createPathProxy(nextVal, addToPathFn)
+				: nextVal
+		},
+		// immutable
+		set: () => false,
+        deleteProperty: () => false,
+	});
+}

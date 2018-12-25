@@ -1,5 +1,4 @@
 import { PropsPath } from '../utils/general-types';
-import { tail } from "../utils/general-utils";
 
 export function assocDeep(path: PropsPath, value: any, obj: Object): Object {
 	function recurse(path: PropsPath, input: any) {
@@ -7,11 +6,11 @@ export function assocDeep(path: PropsPath, value: any, obj: Object): Object {
 			return value;
 		}
 
-		const prop = path[0];
+		const [prop, ...restPath] = path;
 
 		return {
 			...input,
-			[prop]: recurse(tail(path), input[prop]),
+			[prop]: recurse(restPath, input[prop]),
 		};
 	}
 

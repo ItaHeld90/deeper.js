@@ -1,7 +1,7 @@
 import { PropsPath } from '../utils/general-types';
 import { tail } from "../utils/general-utils";
 
-export function updatePropDeep(path: PropsPath, value: any, obj: Object): Object {
+export function assocDeep(path: PropsPath, value: any, obj: Object): Object {
 	function recurse(path: PropsPath, input: any) {
 		if (!path.length) {
 			return value;

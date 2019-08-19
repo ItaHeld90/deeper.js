@@ -1,6 +1,9 @@
-import { RecursiveItem, RecursiveArray } from "../utils/general-types";
+import { RecursiveItem, RecursiveArray } from '../utils/general-types';
 
-export const mapSquare = <T, P>(mapperFn: (item: T, idxs: number[]) => P, arr: RecursiveArray<T>) => {
+export const mapSquare = <T, P>(
+    mapperFn: (item: T, idxs: number[]) => P,
+    arr: RecursiveArray<T>
+): RecursiveArray<P> => {
     function recurse(input: RecursiveItem<T>, idxs: number[]) {
         return Array.isArray(input)
             ? input.map((item, idx) => recurse(item, [...idxs, idx]))
@@ -8,4 +11,4 @@ export const mapSquare = <T, P>(mapperFn: (item: T, idxs: number[]) => P, arr: R
     }
 
     return recurse(arr, []);
-}
+};
